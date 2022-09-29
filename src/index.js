@@ -38,17 +38,19 @@ app.post('/users', (request, response) => {
 
   const userExists = users.some(x => x.username === username);
 
+  const user = {
+    id: id, // precisa ser um uuid
+    name: 'John Doe',
+    username: 'johndoe',
+    todos: []
+  };
+
   if (userExists) {
     return response.status(400).json({ error: 'User already exists' });
   } else {
-    users.push({
-      id: id, // precisa ser um uuid
-      name: 'Thiago Franco',
-      username: 'thiagofranco',
-      todos: []
-    });
+    users.push(user);
 
-    return response.status(201).send(users);
+    return response.status(201).send(user);
   }
 
 
@@ -128,7 +130,7 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   } else {
     user.todos.splice(todoIndex, 1)
 
-    return response.status(204).send();
+    return response.status(204);
   }
 
 
