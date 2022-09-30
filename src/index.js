@@ -25,13 +25,7 @@ function checksExistsUserAccount(request, response, next) {
   next();
 
 }
-/**
- * user :{id, name, username, todos:[id, title, deadline, done]}
- * 
- * 
- * 
- * 
- */
+
 app.post('/users', (request, response) => {
   const id = v4();
   const { name, username } = request.body;
@@ -40,8 +34,8 @@ app.post('/users', (request, response) => {
 
   const user = {
     id: id, // precisa ser um uuid
-    name: 'John Doe',
-    username: 'johndoe',
+    name: name,
+    username: username,
     todos: []
   };
 
@@ -116,24 +110,18 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
 })
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  const { id } = request.params
-  const { username } = request.headers
 
-  const user = users.find(x => x.username === username)
+  const { id } = request.params
+  const { user } = request;
+
   const todoIndex = user.todos.findIndex(x => x.id === id)
 
-
-  //console.log(user, todoIndex, user.todos)
-
-  if (user.todos[todoIndex] == undefined) {
+  if (todoIndex === -1) {
     return response.status(404).json({ "error": "Todo does not exist!" })
   } else {
     user.todos.splice(todoIndex, 1)
-
-    return response.status(204);
+    return response.status(204).json();
   }
-
-
 
 });
 
